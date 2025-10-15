@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>书签管理系统 - 管理员后台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
+  <!-- 管理员页面 -->
+  <div id="admin-page" class="flex flex-col h-screen">
+    <!-- 顶部导航 -->
+    <header class="bg-white shadow-sm border-b border-gray-200 z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center">
+              <i class="fa fa-bookmark text-primary text-xl mr-2"></i>
+              <span class="font-bold text-lg">书签管理系统 - 管理员后台</span>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <div class="relative" id="admin-menu-button">
+              <button class="flex items-center space-x-2 focus:outline-none">
+                <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/200/200?random=2" alt="管理员头像">
+                <span class="hidden md:inline text-sm font-medium" id="admin-display-name">管理员</span>
+                <i class="fa fa-chevron-down text-xs text-gray-500"></i>
+              </button>
+              
+              <!-- 管理员菜单 -->
+              <div id="admin-menu" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 z-50">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" id="admin-profile">
+                  <i class="fa fa-user mr-2"></i>个人资料
+                </a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" id="admin-change-password">
+                  <i class="fa fa-key mr-2"></i>修改密码
+                </a>
+                <div class="border-t border-gray-100 my-1"></div>
+                <a href="#" class="block px-4 py-2 text-sm text-danger hover:bg-gray-100" id="logout-admin">
+                  <i class="fa fa-sign-out mr-2"></i>退出登录
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-1 flex overflow-hidden">
+      <!-- 管理侧边栏 -->
+      <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 overflow-y-auto scrollbar-hide">
+        <nav class="p-4">
+          <div class="space-y-1 admin-nav">
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium bg-primary/10 text-primary">
+              <i class="fa fa-tachometer w-5 text-center mr-3"></i>
+              <span>控制面板</span>
+            </button>
+            
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+              <i class="fa fa-users w-5 text-center mr-3"></i>
+              <span>用户管理</span>
+            </button>
+            
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+              <i class="fa fa-sitemap w-5 text-center mr-3"></i>
+              <span>用户组管理</span>
+            </button>
+            
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+              <i class="fa fa-bookmark w-5 text-center mr-3"></i>
+              <span>书签管理</span>
+            </button>
+            
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+              <i class="fa fa-folder w-5 text-center mr-3"></i>
+              <span>分类管理</span>
+            </button>
+            
+            <button class="admin-nav-item w-full text-left px-3 py-2.5 rounded-lg flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+              <i class="fa fa-cog w-5 text-center mr-3"></i>
+              <span>系统设置</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- 管理内容区域 -->
+      <div class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- 控制面板 -->
+        <div id="dashboard-panel" class="admin-panel">
+          <div class="mb-6">
+            <h2 class="text-[clamp(1.25rem,2vw,1.75rem)] font-bold text-gray-800">控制面板</h2>
+            <p class="text-gray-500 mt-1">欢迎回来，管理员！这里是系统概览</p>
+          </div>
+          
+          <!-- 统计卡片 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500">总用户数</p>
+                  <h3 class="text-2xl font-bold mt-1 text-gray-800">42</h3>
+                  <p class="text-xs text-success mt-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-1"></i> 较上月增长 5.2%
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <i class="fa fa-user"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500">用户组数量</p>
+                  <h3 class="text-2xl font-bold mt-1 text-gray-800">8</h3>
+                  <p class="text-xs text-success mt-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-1"></i> 较上月增长 1.0%
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                  <i class="fa fa-sitemap"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500">书签总数</p>
+                  <h3 class="text-2xl font-bold mt-1 text-gray-800">156</h3>
+                  <p class="text-xs text-success mt-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-1"></i> 较上月增长 12.8%
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center text-success">
+                  <i class="fa fa-bookmark"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500">今日访问量</p>
+                  <h3 class="text-2xl font-bold mt-1 text-gray-800">128</h3>
+                  <p class="text-xs text-danger mt-2 flex items-center">
+                    <i class="fa fa-arrow-down mr-1"></i> 较昨日下降 3.5%
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center text-warning">
+                  <i class="fa fa-eye"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 图表和数据表格 -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="font-semibold text-gray-800">访问统计</h3>
+                <div class="flex space-x-2">
+                  <button class="px-3 py-1 text-xs bg-primary/10 text-primary rounded-full">周</button>
+                  <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">月</button>
+                  <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">年</button>
+                </div>
+              </div>
+              <div class="h-64">
+                <canvas id="visit-chart"></canvas>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+              <h3 class="font-semibold text-gray-800 mb-6">用户组分布</h3>
+              <div class="h-64">
+                <canvas id="user-group-chart"></canvas>
+              </div>
+              <div class="mt-4 space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-primary mr-2"></span>
+                    <span class="text-sm text-gray-600">开发组</span>
+                  </div>
+                  <span class="text-sm font-medium">35%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-secondary mr-2"></span>
+                    <span class="text-sm text-gray-600">设计组</span>
+                  </div>
+                  <span class="text-sm font-medium">25%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-success mr-2"></span>
+                    <span class="text-sm text-gray-600">产品组</span>
+                  </div>
+                  <span class="text-sm font-medium">20%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-warning mr-2"></span>
+                    <span class="text-sm text-gray-600">管理层</span>
+                  </div>
+                  <span class="text-sm font-medium">20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 用户管理面板 -->
+        <div id="user-management-panel" class="admin-panel hidden">
+          <div class="mb-6">
+            <h2 class="text-[clamp(1.25rem,2vw,1.75rem)] font-bold text-gray-800">用户管理</h2>
+            <p class="text-gray-500 mt-1">管理系统中的所有用户账号</p>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <div class="relative w-full md:w-64">
+                  <input type="text" placeholder="搜索用户..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all duration-200">
+                  <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                  <div class="relative">
+                    <select class="pl-3 pr-10 py-2 bg-white border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm">
+                      <option value="">所有用户组</option>
+                      <option value="dev">开发组</option>
+                      <option value="design">设计组</option>
+                      <option value="product">产品组</option>
+                      <option value="manage">管理层</option>
+                    </select>
+                    <i class="fa fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                  </div>
+                  
+                  <div class="flex space-x-2">
+                    <button id="export-user-template" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center">
+                      <i class="fa fa-download mr-2"></i> 导出模板
+                    </button>
+                    <button id="import-users" class="px-4 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg text-sm font-medium transition-colors flex items-center">
+                      <i class="fa fa-upload mr-2"></i> 导入用户
+                    </button>
+                    <button id="add-user" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-medium transition-colors flex items-center">
+                      <i class="fa fa-plus mr-2"></i> 添加用户
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户组</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <!-- 管理员账号 -->
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-8 w-8">
+                          <img class="h-8 w-8 rounded-full" src="https://picsum.photos/200/200?random=99" alt="管理员头像">
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">admin</div>
+                          <div class="text-sm text-gray-500">admin@example.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">系统管理员</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">管理员组</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">启用</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-01-01
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <a href="#" class="text-primary hover:text-primary/80 mr-3">编辑</a>
+                      <a href="#" class="text-gray-400 cursor-not-allowed">删除</a>
+                    </td>
+                  </tr>
+                  
+                  <!-- 普通用户 -->
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-8 w-8">
+                          <img class="h-8 w-8 rounded-full" src="https://picsum.photos/200/200?random=3" alt="">
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">zhangsan</div>
+                          <div class="text-sm text-gray-500">zhangsan@example.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">张三</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">开发组</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">启用</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-06-15
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <a href="#" class="text-primary hover:text-primary/80 mr-3">编辑</a>
+                      <a href="#" class="text-danger hover:text-danger/80">删除</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
